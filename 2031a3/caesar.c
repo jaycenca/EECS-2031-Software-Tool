@@ -4,67 +4,117 @@
 #include <ctype.h>
 
 //defining the number for lower and upper case of the characters
-#define UPPER 97
-#define LOWER 65
 
-void encryptedMessage(char *str, int shift);
+#define UPPER 65
+#define LOWER 97
+
+char encryptedMessage(char *str, int shift);
 void shiftHandlingError(int shift);
 
 
 
 int main(int argc, char *argv[])
 {
-	char str[10000];
-	int shift;
-	
-	//encryptedMessage(*str, shift);
-	
+	char *shift;
+	shift = argv[2];
+
 	//------------------------------------------------------------------
 	//testing
 	//------------------------------------------------------------------
-	FILE *fp;
-
-        char *filename = *&argv[1];
-	char *filenameC = filename;
-	//printf("%s\n", filename);
-	int size = strlen(filename);
-	printf("The size of %s is %d\n", filename, size);
-	fp = fopen(filename, "r");
-	char *enc = filename;
-	printf("%s", enc);
-
-	strcat(enc, ".enc");
-	printf("%s\n", enc);
-	printf("%s\n", filename);
 	
-	char ch;
-	while(fscanf(fp, "%c", &ch) != EOF)
+	//printf("The Shift is %d\n",*(shift+ (1-count)) - '0');
+
+	//printf("The number of arguments is %d\n", argc);
+
+	
+	
+	//convert the list of char into integer
+	int shiftValue = 0;
+	int count = 0;
+
+	//count the number of digits
+	while(*shift != '\0')
 	{
-		printf("%c", ch);
-	
+		count = count + 1;
+		shift++;
 	}
 
-	fclose(fp);
+	shift--;
+	
+	//calculate the number 
+	int i;
+	for(i = 0; i < count; i++)
+	{	
+		shiftValue += (i > 0) ? (((*shift-'0') * 10) * i) : *(shift) - '0';
+
+		/**
+		printf("the count is %d and i is %d\n", count, i);
+		if(i > 0)
+			shiftValue += (*(shift) - '0') * 10 * i;
+		else 
+			shiftValue += (*shift) - '0';
+		printf("The number is %d\n", (*(shift)));
+		printf("The shift is %d\n", (*(shift) - '0') );
+		printf("The value is %d\n", shiftValue);*/
+		shift--;
+	}
+
+	//printf("The shift Value is %d\n", shiftValue);
+
+	if(argc != 3 || shiftValue > 26 || shiftValue < 1) 
+	{
+		shiftValue = 28;
+		shiftHandlingError(shiftValue);
+		return -1;
+	}
+
+	//declaring two files: input file and output file
+	FILE *fin;
+	FILE *fout;
+
+	//declare and initialize a pointer that points to the corresponding command argument,
+	//In this case: pointing to the second argument, which contains the filename 
+        char *filename = *&argv[1];
+
+	//printf("%s\n", filename);
+	//printf("The size of %s is %d\n", filename, size);
+	
+	fin = fopen(filename, "r");
+	//char *enc = filename;
+	//printf("%s", enc);
+
+	strcat(filename, ".enc");
+	//printf("The enc is %s\n", enc);
+	//printf("The filename is %s\n", filename);
+	fout = fopen(filename, "w+");
+
+	
+	char ch;
+	while(fscanf(fin, "%c", &ch) != EOF)
+	{
+		printf("%c, ..... ",ch);
+		ch = encryptedMessage(&ch, shiftValue);
+		fprintf(fout,"%c", ch);
+		printf("%c\n", ch);
+	}
+
+	fclose(fin);
+	fclose(fout);
 	return 0;
 }
 
 void shiftHandlingError(int shift)
 {
-	if(shift > 26) 
+	if(shift > 26 || shift < 1) 
 	{
-		printf("Argument Entered is Invalid\n");
+		printf("Argument Entered is Invalid\n\n");
 		printf("./encrypt filename shift\n");
-		printf("where filename is a valid file\n");\
-		printf("and shift is a number in the range from 1 to 25");
+		printf("where filename is a valid file\n");
+		printf("and shift is a number in the range from 1 to 26\n");
 	}
 }
-void encryptedMessage(char *str, int shift)
+char encryptedMessage(char *ch, int shift)
 {
-
-	//store the char
-	char ch;
-
-
         /*loop through all the characters in the array 
 	 * and check 4 requirements: 
 	 * 1) character is a letter ---> left unchanged
@@ -72,37 +122,20 @@ void encryptedMessage(char *str, int shift)
 	 * 3) character is a lower case ---> left unchanged
 	 * 4) character is a upper case ---> arithmetic operation to change 
 	 */
-
-	while ( (ch=getchar()) != '\n')
-	{
-		
-	}
-
-
-	{
-		int i = 0;
-		while ( shift != -1 && str != NULL && str[i] != '\0')
-		{
-			char current = str[i];
-			bool condition1 = current >= LOWER && current < 91; 
-			bool condition2 = current >= UPPER && current < 123;
 	
-			if( condition1 )
-			{
-				str[i] = LOWER +( (current + shift) % LOWER ) % 26 ;
-			}
-			else if( condition2 )
-			{
-				str[i] = UPPER + ( (current + shift) % UPPER ) % 26;
-			}
-			i++;
-                }
-		
-		if( shift != -1)
-			printf("%s", str);
+	char *current = ch;
+	bool condition1 = *current >= LOWER && *current < 'z'; 
+	bool condition2 = *current >= UPPER && *current < 'Z';
+	
+	if( condition1 )
+	{
+		*current = LOWER +( (*current + shift) % LOWER ) % 26 ;
 	}
-
-	printf("\n");
+	else if( condition2 )
+	{
+		*current = UPPER + ( (*current + shift) % UPPER ) % 26;
+	}   
+	return *current;
 }
 
 
