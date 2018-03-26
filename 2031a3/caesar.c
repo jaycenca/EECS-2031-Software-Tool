@@ -9,7 +9,7 @@
 #define LOWER 97
 
 char encryptedMessage(char *str, int shift);
-void shiftHandlingError(int shift);
+void HandlingError();
 
 
 
@@ -26,6 +26,11 @@ int main(int argc, char *argv[])
 
 	//printf("The number of arguments is %d\n", argc);
 
+        if(argc < 3) 
+	{
+		HandlingError();
+		return -1;
+	}
 	
 	
 	//convert the list of char into integer
@@ -35,6 +40,12 @@ int main(int argc, char *argv[])
 	//count the number of digits
 	while(*shift != '\0')
 	{
+		//check validation of each character
+		if(*shift <48 || *shift > 57) 
+                {
+                        HandlingError();
+			return -1;
+                }
 		count = count + 1;
 		shift++;
 	}
@@ -58,13 +69,12 @@ int main(int argc, char *argv[])
 		printf("The value is %d\n", shiftValue);*/
 		shift--;
 	}
-
+ 
 	//printf("The shift Value is %d\n", shiftValue);
-
-	if(argc != 3 || shiftValue > 26 || shiftValue < 1) 
+   
+	if(shiftValue > 26 || shiftValue < 1) 
 	{
-		shiftValue = 28;
-		shiftHandlingError(shiftValue);
+		HandlingError();
 		return -1;
 	}
 
@@ -103,15 +113,12 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void shiftHandlingError(int shift)
+void HandlingError()
 {
-	if(shift > 26 || shift < 1) 
-	{
-		printf("Argument Entered is Invalid\n\n");
-		printf("./encrypt filename shift\n");
-		printf("where filename is a valid file\n");
-		printf("and shift is a number in the range from 1 to 26\n");
-	}
+	printf("Argument Entered is Invalid\n\n");
+	printf("./encrypt filename shift\n");
+	printf("where filename is a valid file\n");
+	printf("and shift is a number in the range from 1 to 26\n");
 }
 char encryptedMessage(char *ch, int shift)
 {
