@@ -29,7 +29,7 @@ struct Node {
 	char position;
 	int value;
 	struct Node* next;
-}
+};
 
 
 //**********************************************************************
@@ -252,3 +252,33 @@ void printNoPlayersWithLowerValue(int value)
 //**********************************************************************
 // Add your functions below this line.
 
+//INSERTION
+struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char *position , int value)
+{
+	return head;
+}
+//DELETION
+void DELETE(struct Node *head, char *family_name)
+{
+}
+
+//SEARCH_FAMILY_NAME
+struct Node* SEARCH_FAMILY_NAME(struct Node *head, char *family_name)
+{
+	return head;
+}
+
+//SEARCH_WORTHLESS
+void SEARCH_WORTHLESS(struct Node *head, int value)
+{
+}
+
+//PRINT the LinkedList in special order
+void PRINT_LINKEDLIST(struct Node *head)
+{
+}
+
+//PRINT the all the information about the NODE
+void PRINT_NODE(struct Node *node)
+{
+}
