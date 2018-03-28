@@ -102,10 +102,10 @@ int main(int argc, char *argv[])
 	char ch;
 	while(fscanf(fin, "%c", &ch) != EOF)
 	{
-		printf("%c, ..... ",ch);
+		//printf("%c, ..... ",ch);
 		ch = encryptedMessage(&ch, shiftValue);
 		fprintf(fout,"%c", ch);
-		printf("%c\n", ch);
+		printf("%c", ch);
 	}
 
 	fclose(fin);

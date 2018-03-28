@@ -6,8 +6,8 @@
 //
 // Uses a linked list to hold the team players.
 //
-// Author: <Your Name Goes Here>
-// Student Info: <Your Student Number Goes Here>
+// Author: Jay Cen 
+// Student Info: 215145105
 
 
 #include <stdio.h>
@@ -23,7 +23,13 @@
 //
 //
 //   ADD STATEMENT(S) HERE
-
+struct Node {
+	char * family_name;
+	char * first_name;
+	char position;
+	int value;
+	struct Node* next;
+}
 
 
 //**********************************************************************
@@ -31,9 +37,25 @@
 //
 // Functions that modify the linked list.
 //   Declare your linked list functions here.
-//
 //   ADD STATEMENT(S) HERE
 
+//INSERTION
+struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char *position, int value);
+
+//DELETION
+void DELETE(struct Node *head, char *family_name);
+
+//SEARCH_FamilyName 
+struct Node* SEARCH_FAMILY_NAME(struct Node *head, char *family_name);
+
+//SEARCH_WORTHLESS
+void SEARCH_WORTHLESS(struct Node *head, int value);
+
+//PRINT the LinkedList (in special order) 
+void PRINT_LINKEDLIST(struct Node *head);
+
+//PRINT the NODE
+void PRINT_NODE(struct Node *node);
 
 
 //**********************************************************************
@@ -167,6 +189,7 @@ int main (void)
 // Function to get a line of input without overflowing target char array.
 void safegets (char s[], int arraySize)
 {
+    
     int i = 0, maxIndex = arraySize-1;
     char c;
     while (i < maxIndex && (c = getchar()) != NEWLINE)
