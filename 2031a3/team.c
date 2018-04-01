@@ -35,21 +35,22 @@ struct Node {
 //**********************************************************************
 // Linked List Function Declarations
 //
-// Functions that modify the linked list.
+// Functions that m
+// return head;odify the linked list.
 //   Declare your linked list functions here.
 //   ADD STATEMENT(S) HERE
 
 //INSERTION
-struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char *position, int value);
+struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char position, int value);
 
 //DELETION
-void DELETE(struct Node *head, char *family_name);
+struct Node* DELETE(struct Node *head, char *family_name);
 
 //SEARCH_FamilyName 
 struct Node* SEARCH_FAMILY_NAME(struct Node *head, char *family_name);
 
 //SEARCH_WORTHLESS
-void SEARCH_WORTHLESS(struct Node *head, int value);
+int SEARCH_WORTHLESS(struct Node *head, int value);
 
 //PRINT the LinkedList (in special order) 
 void PRINT_LINKEDLIST(struct Node *head);
@@ -57,6 +58,11 @@ void PRINT_LINKEDLIST(struct Node *head);
 //PRINT the NODE
 void PRINT_NODE(struct Node *node);
 
+//PRINT message for NULL
+void PRINT_NULL(char *family_name);
+
+//Mapping function
+int map(char position);
 
 //**********************************************************************
 // Support Function Declarations
@@ -94,11 +100,10 @@ int main (void)
         = "Personal Team Maintenance Program.\n\n";
     const char commandList[]
         = "Commands are I (insert), D (delete), S (search by name),\n"
-          "  V (search by value), P (print), Q (quit).\n";
-
-    // Declare linked list head.
+	  " V (search by balue), P (print), Q (quit).\n";
+    // Declare linked list head
     //   ADD STATEMENT(S) HERE TO DECLARE LINKED LIST HEAD.
-
+    struct Node *head = NULL;
  
     // announce start of program
     printf("%s",bannerString);
@@ -106,6 +111,12 @@ int main (void)
     
     char response;
     char input[MAX_LENGTH+1];
+
+    char *family_name;
+    char *first_name;
+    char position[2];
+    int value[2];
+
     do
     {
         printf("\nCommand?: ");
@@ -121,28 +132,65 @@ int main (void)
             //   ADD STATEMENT(S) HERE
 
             // USE THE FOLLOWING PRINTF STATEMENTS WHEN PROMPTING FOR DATA:
-            // printf("  family name: ");
-            // printf("  first name: ");
-            // printf("  position: ");
-            // printf("  value: ");
 
+	    //allocate memory for family name
+	    family_name = (char *)malloc(sizeof(MAX_LENGTH+1));
+	    printf("  family name: ");
+	    safegets(family_name, MAX_LENGTH+1);
+	    printf("%s\n", family_name);
+
+	    //allocate memory for first name
+	    first_name = (char *)malloc(sizeof(MAX_LENGTH+1));
+            printf("  first name: ");
+	    safegets(first_name, MAX_LENGTH+1);
+	    printf("%s\n", first_name);
+	    
+            printf("  position: ");
+	    scanf(" %c", &position);
+	    printf("%c", position[0]);
+
+	    printf(" value: ");
+	    scanf("%d", &value);
+	    printf("%d", value[0]);
+	    
+	    char end = getchar();
+	    head = INSERT(head, family_name, first_name, position[0], value[0]);
+
+	    //print the information of the inserted new nodes
+	    PRINT_LINKEDLIST(head);
+
+	    //deallocated memory
+	    free(family_name);
+	    free(first_name);
+	    
         }
         else if (response == 'D')
         {
-            // Delete a player from the list.
+	     printf("\nEnter family name to delete for: ");
+	     family_name =(char*)malloc(sizeof(MAX_LENGTH+1));
+             safegets(family_name, MAX_LENGTH+1);
 
-            printf("\nEnter family name for entry to delete: ");
-
-            //   ADD STATEMENT(S) HERE
+             //   ADD STATEMENT(S) HERE
+	     struct Node *delete_node = DELETE(head, family_name);
+	     
+	     if(delete_node == NULL)
+		     PRINT_NULL(family_name);
+	     free(family_name);
 
         }
         else if (response == 'S')
         {
             // Search for a player by family name.
-
             printf("\nEnter family name to search for: ");
-
+	    family_name = (char*)malloc(sizeof(MAX_LENGTH+1));
+	    scanf("%s", family_name);
             //   ADD STATEMENT(S) HERE
+	    struct Node* player = SEARCH_FAMILY_NAME(head,family_name);
+
+	    if(player == NULL)
+		    PRINT_NODE(player);
+
+	    free(family_name);
 
         }
         else if (response == 'V')
@@ -150,15 +198,21 @@ int main (void)
             // Search for players that are worth less than or equal a value.
 
             printf("\nEnter value: ");
+	    scanf("%d", &value);
+	    char end = getchar();
 
             //   ADD STATEMENT(S) HERE
+	    int count = SEARCH_WORTHLESS(head, value[0]);
+
+	    if(count == 0)
+		    printNoPlayersWithLowerValue(value[0]);
 
         }
         else if (response == 'P')
         {
             // Print the team.
-
             //   ADD STATEMENT(S) HERE
+	    PRINT_LINKEDLIST(head);
 
         }
         else if (response == 'Q')
@@ -174,12 +228,11 @@ int main (void)
   
     // Delete the whole linked list that hold the team.
     //   ADD STATEMENT(S) HERE
-
+    
 
     // Print the linked list to confirm deletion.
     //   ADD STATEMENT(S) HERE
-
-
+   // PRINT_LINKEDLIST(head);
     return 0;
 }
 
@@ -231,6 +284,7 @@ void familyNameDeleted (char familyName[])
              familyName);
 }
 
+
 // Function to call when printing an empty team.
 void printTeamEmpty (void)
 {
@@ -253,32 +307,219 @@ void printNoPlayersWithLowerValue(int value)
 // Add your functions below this line.
 
 //INSERTION
-struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char *position , int value)
-{
+struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char position , int value)
+{	
+	printf("INSERTION\n");
+	//declare new node 
+	struct Node *new_node; 
+	new_node = malloc(sizeof(struct Node));
+
+	
+	//declare two pointers for current and next pointers
+	struct Node *current;
+	struct Node *prev;
+
+	//allocate memory 
+	new_node -> family_name = malloc(MAX_LENGTH+1);
+	new_node -> first_name = malloc(MAX_LENGTH+1);
+
+	//assigning values 
+	strcpy(new_node -> family_name, family_name);
+	//printf("%s", new_node -> family_name);	
+	strcpy(new_node -> first_name, first_name);
+	new_node -> position = position;
+	new_node -> value = value;
+
+	/*
+	if(strcmp(new_node -> first_name, new_node -> family_name) == 0)
+		printf("The two string are the same: \nfirst_name: %s, \n family_name: %s", first_name, family_name);
+        /*
+	//NotFound default to be true 
+	int NotFound = 1;
+	for(prev = NULL, current = head; current !=NULL; prev = current,  current  = current -> next)
+	{
+
+
+	} 
+	*/
+
+	prev = NULL;
+	current = head;
+
+	//loop invariant
+	int compare = 0;
+
+	//iteration over the linked list
+	while(current != NULL && compare == 0)
+	{
+		//Note that the family_name, first_name and position together
+		//distinct each node itself
+		char *current_family_name = current -> family_name;
+		char *current_first_name = current -> first_name;
+		char current_position = current -> position;
+
+		//compare family_name and first_name
+		int compareF_N = strcmp(current_family_name, family_name);
+		int compareFirst_N = strcmp(current_first_name, first_name);
+
+		//compare position
+		int positionAtGiven = map(position);
+		int positionAtCurrent = map(current_position);
+		int compareP = (positionAtGiven == positionAtCurrent);
+
+		//find the next position
+		struct Node* next_node = current -> next;
+		int next_position = map(next_node -> position);
+
+		int compareCN = (next_position == positionAtGiven);
+
+		//------------------------------------------------------------
+		//------------------------------------------------------------
+		if(compareF_N != 0 && compareFirst_N && compareP != 0 && compareCN == 1)
+			compare = 1;
+
+		//INCREMENTATION
+		prev = current;
+		current = current -> next;
+
+		//************************************************************
+		//************************************************************
+		
+		if(compare == 0)
+			break;
+	}
+
+	//Pointer Manipulation
+
+	//----------------------------------------------------------------------
+	//----------------------------------------------------------------------
+	
+	//the new_node will insert in the beginning of the list
+	if(prev == NULL)
+	{
+		new_node -> next = head;
+		head = new_node;
+	}
+
+	if(compare != 0)
+	{
+		prev -> next = new_node;
+		new_node -> next = current;
+	}
+
+	if(compare == 0)
+		familyNameDuplicate(family_name);
+        //new_node -> next = head;
+        //head = new_node;
+	
+
 	return head;
 }
 //DELETION
-void DELETE(struct Node *head, char *family_name)
+struct Node* DELETE(struct Node *head, char *family_name)
 {
+	struct Node *current, *prev;
+
+	for(prev = NULL, current = head; current != NULL && strcmp(current -> family_name, family_name); prev = current, current = current -> next)
+
+	//printf("Compare : %d", strcmp(current -> family_name, family_name));
+	//node with family_name is not found
+	if(current == NULL)
+		return current;
+	//node with family_name is found at the head
+	if(prev == NULL)
+		head = head -> next;
+	else 
+		prev -> next = current -> next;
+
+	free(current);
+	return head;
 }
 
 //SEARCH_FAMILY_NAME
 struct Node* SEARCH_FAMILY_NAME(struct Node *head, char *family_name)
 {
-	return head;
+	struct Node *iterator;
+	int isFound = 0;
+	
+
+	for(iterator = head; iterator != NULL && isFound == 0; iterator = iterator -> next)
+	{
+		int compare = strcmp(iterator -> family_name, family_name);
+
+		if(compare == 0)
+			isFound = 1;
+	}
+
+	if(isFound == 0)
+		familyNameNotFound(family_name);
+	return iterator;
 }
 
 //SEARCH_WORTHLESS
-void SEARCH_WORTHLESS(struct Node *head, int value)
+int SEARCH_WORTHLESS(struct Node *head, int value)
 {
+	struct Node *iterator;
+	int count = 0;
+
+	for(iterator = head; iterator != NULL; iterator = iterator -> next)
+	{
+		int i_value = iterator -> value;
+
+		if(i_value <= value)
+		{
+			PRINT_NODE(iterator);
+			count++;
+		}
+	}
+	return count;
 }
 
 //PRINT the LinkedList in special order
 void PRINT_LINKEDLIST(struct Node *head)
 {
+	
+	printTeamTitle();
+	struct Node *p; 
+
+	for( p = head; p != NULL; p = p -> next)
+	{
+		PRINT_NODE(p);
+	}
 }
 
 //PRINT the all the information about the NODE
 void PRINT_NODE(struct Node *node)
 {
+	if(node == NULL)
+		printTeamEmpty();
+	else 
+	{
+		printf("%s\n", node -> family_name);
+		printf("%s\n", node -> first_name);
+		printf("%c\n", node -> position);
+		printf("%d\n", node -> value);
+		printf("\n");
+	}
+}
+
+//PRINT the message for NULL
+void PRINT_NULL(char *family_name)
+{
+	familyNameNotFound(family_name);
+}
+
+//Map Function
+int map(char position)
+{
+	if(position == 'G'  || position == 'g')
+		return 0;
+	else if(position == 'D' || position == 'd')
+		return 1;
+	else if(position == 'M' || position == 'm')
+		return 2;
+	else if(position == 'S' || position == 's')
+		return 3;
+	else 
+		return -1;
 }
