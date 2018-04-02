@@ -95,10 +95,7 @@ const char STRIKER = 'S';
 //
 
 int main (void)
-{  
-    //int testing = map('m');
-    //printf("The mapping of m is %d", testing);
-    
+{ 
     const char bannerString[]
         = "Personal Team Maintenance Program.\n\n";
     const char commandList[]
@@ -237,7 +234,6 @@ int main (void)
     // Print the linked list to confirm deletion.
     //   ADD STATEMENT(S) HERE
     //PRINT_LINKEDLIST(head);
-   
     return 0;
 }
 
@@ -315,7 +311,6 @@ void printNoPlayersWithLowerValue(int value)
 struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char position , int value)
 {	
 	printf("INSERTION\n");
-
 	//declare new node 
 	struct Node *new_node; 
 	new_node = malloc(sizeof(struct Node));
@@ -342,6 +337,7 @@ struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char
 
 	//loop invariant
 	int compare = 0;
+	int condition = 0;
 
 	//iteration over the linked list
 	while(current != NULL && compare == 0)
@@ -356,39 +352,36 @@ struct Node* INSERT(struct Node *head, char *family_name, char *first_name, char
 
 		//compare position
 		int positionAtGiven = map(position);
-		printf("PositionAtGiven is %d\n", positionAtGiven);
 		int positionAtCurrent = map(current_position);
+		int compareP = (positionAtGiven == positionAtCurrent);
 
-		printf("PositionAtCurrent is %d\n", positionAtCurrent);
 		int compareCN = (positionAtGiven < positionAtCurrent);
 
 		//------------------------------------------------------------
 		//------------------------------------------------------------
 		
 
-		//family_name and position given is less than current position
-		if(compareF_N != 0 && compareCN != 0)
+		if(compareF_N != 0 && compareP != 0 && compareCN == 0)
 		{
 			compare = 1;
 			printf("ENTER 1\n");
+			condition = 1;
 		}
 
-		//at the same time, also checks if current pointer had reach its end
-		else if(current -> next == NULL && compareF_N != 0)
+	        if(current -> next == NULL && compareF_N != 0)
 		{
 			compare = 2;
 			printf("Enter 2\n");
+			condition = 2;
 		}
-
-
-		if(compare != 1)
-		{
+		if (condition != 1)
+		{	
 			printf("Enter INCREMENTATION\n");
-	
 			//INCREMENTATION
 			prev = current;
 			current = current -> next;
 		}
+
 		//************************************************************
 		//************************************************************
 	}
